@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 
 def DYDX(fx, x):
     dfdx= np.zeros(len(x))
-    for r in range(-100,len(x)):
+    for r in range(0,len(x)):
         if r >=1 :
             dfdx[r] = ((fx[r])-(fx[r-1])) / (x[r]-(x[r-1]))
         elif r == 0: 
