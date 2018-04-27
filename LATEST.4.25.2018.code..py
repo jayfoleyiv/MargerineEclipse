@@ -6,7 +6,7 @@ from numpy.random import choice
 
 # First set up the figure, the axis, and the plot element we want to animate
 fig = plt.figure()
-ax = plt.axes(xlim=(0, 500), ylim=(-0.3, 0.3))
+ax = plt.axes(xlim=(0, 500), ylim=(-0.5, 0.5))
 line, = ax.plot([], [], lw=2)
 
 
@@ -58,32 +58,14 @@ def Normalize(pu):
         pu[i]=temp
     return pu
 
-'''
-P = (np.conj(y))*y
-list_of_candidates = x
-Pn = Normalize(P)
-pr = np.real(Pn)
-### Draw a random number using probability distribution
-draw = choice(list_of_candidates, 100, p=pr)
-print(draw)
-x0 = draw[0]    
-NewWvfxn = Pos_Eignfn(sig, xs, x0)
-plt.plot(x, np.real(y), 'green', x, np.real(P), 'orange')
-plt.show()
-'''
+
+
 L = 500.
 
-### If you initialize in state n with energy En, then 
-### measure position, yielding value x0... expand the position eigenfunction
-### at x0 in terms of the energy eigenfunctions... yielding array of expansion
-### coefficiencts cn... then measure energy again, yielding energy value Em
-### then you have the following three pieces of data:
-### 1. n -> quantum number of initial state (for time<30)
-### 2. cn -> array of expansion coefficients for position eigenfunction (for 30<t<60)
-### 3. m  -> quantum number of final state (for time>60)
-xt = np.linspace(0,L,500)
-n = np.linspace(1,10,10)
-y = PIB_Func(xt,6,L)
+
+xt = np.linspace(0,L,10000)
+n = np.linspace(1,150,150)
+y = PIB_Func(xt,10,L)
 P = np.real(np.conj(y)*y)
 cn = FourierAnalysis(xt, y, n, L)
 print(cn)
@@ -92,10 +74,10 @@ print(cn)
 list_of_candidates=xt
 Pn=Normalize(P)
 pr=np.real(P)
-draw=choice(list_of_candidates,15,p=pr)
+draw=choice(list_of_candidates,1,p=pr)
 print("Measurement of position yielded x0 = ",draw[0])
 
-PosEigenfxn = Gauss_Packet(0.5, xt, draw[0], 0)
+PosEigenfxn = Gauss_Packet(3., xt, draw[0], 0)
 cn2 = FourierAnalysis(xt, PosEigenfxn, n, L)
 
 #energy=PIB_En(n, L)
@@ -108,7 +90,12 @@ cn2 = FourierAnalysis(xt, PosEigenfxn, n, L)
 psi_exp = np.zeros_like(y)
 
 for i in range (0,len(cn)):
-    psi_exp = psi_exp + cn[i]*PIB_Func(xt, i+1, L)
+    psi_exp = psi_exp + cn2[i]*PIB_Func(xt, i+1, L)
+    
+ 
+#plt.plot(xt, PosEigenfxn, 'red', xt, psi_exp, 'b--')
+#plt.show()    
+
 
 def init():
     line.set_data([], [])
@@ -126,7 +113,7 @@ def animate(i):
   
     ### when i < 30, animate your initial state (some energy eigenfunction)
     L = 500
-    x = np.linspace(0,L,500)
+    x = np.linspace(0,L,10000)
     ### Imaginary unit i
     ci = 0.+1j    
     psi_t = np.zeros(len(x),dtype=complex)
@@ -134,7 +121,7 @@ def animate(i):
     if i<30:
         for j in range(0,len(cn)):
             psi = PIB_Func(x, n[j], L)
-            ft = PIB_Time(n[j], L, i*100)
+            ft = PIB_Time(n[j], L, i*20)
             psi_t = psi_t +cn[j]*psi*ft
         psi_t_star = np.conj(psi_t)
         #psi_t = PIB_Func(x, 10, L)*PIB_Time(10, L, 10*i)
@@ -151,15 +138,15 @@ def animate(i):
     elif i<60:
 #        print(i)
         psi_t = np.zeros(len(x),dtype=complex)
-        for g in range(len(cn2)):
-            psi_t = psi_t + cn2[g]*(1.6*i)*Gauss_Packet(5*(i-30), xt, draw[0], 0)
+        for g in range(0,len(cn2)):
+            psi_t = psi_t + cn2[g]*PIB_Func(xt, g+1, L)*PIB_Time(g+1, L, (i-30)*20)
 #        psi_t= PIB_Func(x,10,L)*PIB_Time(10, L, i*100)
         y = np.real(psi_t)
         z = np.imag(psi_t)
         p = np.real(y*y+z*z)
         
     elif i<10000:
-        for j in range(0,len(cn)):
+        for j in range(0,len(cn2)):
             psi = PIB_Func(x, 20, L)
             ft = PIB_Time(n[j], L, i*100)
             psi_t = psi_t +cn[j]*psi*ft
@@ -179,7 +166,3 @@ anim = animation.FuncAnimation(fig, animate, init_func=init,
 ### uncomment to save animation as mp4 
 #anim.save('pib_wp.mp4', fps=20, extra_args=['-vcodec', 'libx264'])
 plt.show()
-
-
-#lt.plot(x,np.real(psi_exp),'r--', x, np.real(y), 'blue')
-#lt.show()
