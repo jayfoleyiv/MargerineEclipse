@@ -80,6 +80,12 @@ print("Measurement of position yielded x0 = ",draw[0])
 PosEigenfxn = Gauss_Packet(3., xt, draw[0], 0)
 cn2 = FourierAnalysis(xt, PosEigenfxn, n, L)
 
+### JJF Comment - cn2 has information about your position eigenfunction,
+### and this is now used in your animate function...
+### The final step is to simulate the energy measurement, which
+### I believe is what the commented-lines of code below are meant to 
+### accomplish.
+
 #energy=PIB_En(n, L)
 #list_of_candidates2=energy
 #Pn=Normalize(P)
@@ -93,8 +99,8 @@ for i in range (0,len(cn)):
     psi_exp = psi_exp + cn2[i]*PIB_Func(xt, i+1, L)
     
  
-#plt.plot(xt, PosEigenfxn, 'red', xt, psi_exp, 'b--')
-#plt.show()    
+plt.plot(xt, PosEigenfxn, 'red', xt, psi_exp, 'b--')
+plt.show()    
 
 
 def init():
@@ -121,7 +127,7 @@ def animate(i):
     if i<30:
         for j in range(0,len(cn)):
             psi = PIB_Func(x, n[j], L)
-            ft = PIB_Time(n[j], L, i*20)
+            ft = PIB_Time(n[j], L, i*100)
             psi_t = psi_t +cn[j]*psi*ft
         psi_t_star = np.conj(psi_t)
         #psi_t = PIB_Func(x, 10, L)*PIB_Time(10, L, 10*i)
@@ -139,12 +145,13 @@ def animate(i):
 #        print(i)
         psi_t = np.zeros(len(x),dtype=complex)
         for g in range(0,len(cn2)):
-            psi_t = psi_t + cn2[g]*PIB_Func(xt, g+1, L)*PIB_Time(g+1, L, (i-30)*20)
+            psi_t = psi_t + cn2[g]*PIB_Func(xt, g+1, L)*PIB_Time(g+1, L, (i-30)*10)
 #        psi_t= PIB_Func(x,10,L)*PIB_Time(10, L, i*100)
         y = np.real(psi_t)
         z = np.imag(psi_t)
         p = np.real(y*y+z*z)
-        
+    ### JJF Comment - this block should reference the quantum number that results
+    ### from the measurement of energy, i.e., the second call to 'draw=choice( )'
     elif i<10000:
         for j in range(0,len(cn2)):
             psi = PIB_Func(x, 20, L)
