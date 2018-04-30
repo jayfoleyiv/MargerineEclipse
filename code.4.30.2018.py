@@ -105,7 +105,7 @@ for i in range (0,len(cn2)):
 for i in range (0,len(cn)):
     psi_exp2 = psi_exp2 + cn[i]*PIB_En(i+1, L)
  
-plt.plot(xt, PosEigenfxn, 'red', xt, psi_exp, 'b--', xt, EnEigenfxn, 'green', xt, psi_exp2, 'y--')
+plt.plot(xt, PosEigenfxn, 'red', xt, psi_exp, 'b--', xt, EnEigenfxn, 'green')
 plt.show()
 
 
@@ -161,7 +161,7 @@ def animate(i):
     elif i<10000:
         psi_t2 = np.zeros(len(x),dtype=complex)
         for g in range(0,len(cn)):
-            psi_t2 = psi_t2 + cn2[g]*PIB_Func(xt, draw2[0], L)*PIB_Time(draw2[0], L, (i-1000)*10)
+            psi_t2 = psi_t2 + cn2[g]*EnEigenfxn*PIB_Time(draw2[0], L, (i-100)*10)
         y = np.real(psi_t2)
         z = np.imag(psi_t)
         p = np.real(y*y+z*z)
