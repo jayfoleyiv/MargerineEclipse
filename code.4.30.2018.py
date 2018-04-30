@@ -68,7 +68,7 @@ n = np.linspace(1,150,150)
 y = PIB_Func(xt,10,L)
 P = np.real(np.conj(y)*y)
 cn = FourierAnalysis(xt, y, n, L)
-print(cn)
+#print(cn)
 
 
 list_of_candidates=xt
@@ -92,7 +92,7 @@ Pn2=Normalize(po)
 pr2=np.real(po)
 draw2=choice(list_of_candidates2, 1, p=pr2)
 print("Measurement of energy yielded Ex = ", draw2[0])
-print(pr2)
+#print(pr2)
 
 EnEigenfxn = PIB_Func(xt, draw2[0], L)
 
