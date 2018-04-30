@@ -86,7 +86,13 @@ cn2 = FourierAnalysis(xt, PosEigenfxn, n, L)
 ### I believe is what the commented-lines of code below are meant to 
 ### accomplish.
 
-po = np.conj(cn)*cn
+### JJF Comment: You were using the array cn, which was the coefficients 
+### corresponding to the initial state (10th energy eigenfunction)
+### the array cn2 contains the coefficients corresponding to your position
+### eigenfunction, and describes the state you are in at the time you want
+### to make your energy measurement... now I have changed line 95 so that you are correctly
+### using the array cn2, not the array cn as before
+po = np.conj(cn2)*cn2
 list_of_candidates2=n
 Pn2=Normalize(po)
 pr2=np.real(po)
@@ -160,8 +166,9 @@ def animate(i):
     ### from the measurement of energy, i.e., the second call to 'draw=choice( )'
     elif i<10000:
         psi_t2 = np.zeros(len(x),dtype=complex)
-        for g in range(0,len(cn)):
-            psi_t2 = psi_t2 + cn2[g]*EnEigenfxn*PIB_Time(draw2[0], L, (i-100)*10)
+        ### JJF Comment:  You don't need to make this last wavefunction a superposition, 
+        ### it is just the EnEigenfxn that was randomly chosen 
+        psi_t2 = EnEigenfxn*PIB_Time(draw2[0], L, (i-100)*10)
         y = np.real(psi_t2)
         z = np.imag(psi_t)
         p = np.real(y*y+z*z)
@@ -174,4 +181,3 @@ anim = animation.FuncAnimation(fig, animate, init_func=init,
 ### uncomment to save animation as mp4 
 #anim.save('pib_wp.mp4', fps=20, extra_args=['-vcodec', 'libx264'])
 plt.show()
-
